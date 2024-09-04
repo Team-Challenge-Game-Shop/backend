@@ -1,0 +1,63 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            provider: google
+            scope:
+              - email
+              - profile
+              - openid
+            authorization-grant-type: authorization_code
+        provider:
+          google:
+            user-name-attribute: email
+
+  mail:
+    from:
+      name: example
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        debug: false
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  sql:
+    init:
+      mode: never
+      continue-on-error: false
+
+app:
+  frontend:
+    url: https://indie-game-shop.netlify.app
+
+
+jwt:
+  key: ${JWT_KEY}
+  accessToken: 10080 #7day
+  refreshToken: 131490 #3_month
