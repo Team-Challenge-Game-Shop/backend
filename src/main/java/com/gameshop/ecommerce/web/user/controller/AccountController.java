@@ -2,15 +2,13 @@ package com.gameshop.ecommerce.web.user.controller;
 
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.user.model.UserDTO;
+import com.gameshop.ecommerce.web.user.model.UserInfoDTO;
 import com.gameshop.ecommerce.web.user.service.AccountService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -20,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountService accountService;
+
+    @GetMapping
+    public ResponseEntity<UserInfoDTO> getUserInfo(@AuthenticationPrincipal User user) {
+        final var userDto = accountService.getUser(user);
+        return ResponseEntity.of(userDto);
+    }
 
     @PutMapping
     public ResponseEntity<UserDTO> updateInfo(@AuthenticationPrincipal User user, @RequestBody UserDTO userDto) {

@@ -3,6 +3,7 @@ package com.gameshop.ecommerce.web.user.service;
 import com.gameshop.ecommerce.web.user.mapper.UserMapper;
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.user.model.UserDTO;
+import com.gameshop.ecommerce.web.user.model.UserInfoDTO;
 import com.gameshop.ecommerce.web.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 
@@ -23,6 +25,9 @@ public class AccountService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    public Optional<UserInfoDTO> getUser(User user) {
+        return Optional.ofNullable(userMapper.entityToUserInfoDto(user));
+    }
 
     public UserDTO updateInfo(User user, UserDTO userDto) {
         if (userDto.getNewPassword() != null) {
