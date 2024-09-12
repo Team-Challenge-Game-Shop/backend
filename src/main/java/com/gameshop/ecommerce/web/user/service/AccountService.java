@@ -30,8 +30,11 @@ public class AccountService {
     }
 
     public UserDTO updateInfo(User user, UserDTO userDto) {
-        if (userDto.getNewPassword() != null) {
+        if ((userDto.getNewPassword() != null && !userDto.getNewPassword().isEmpty())) {
             updatePassword(user, userDto);
+        } else {
+            log.error("New password cannot be empty");
+            throw new IllegalArgumentException("New password cannot be empty");
         }
         updateUserFields(user, userDto);
 
