@@ -1,9 +1,6 @@
 package com.gameshop.ecommerce.security.auth.controller;
 
-import com.gameshop.ecommerce.security.auth.model.LoginRequest;
-import com.gameshop.ecommerce.security.auth.model.LoginResponse;
-import com.gameshop.ecommerce.security.auth.model.OnRegistrationCompleteEvent;
-import com.gameshop.ecommerce.security.auth.model.RegistrationRequest;
+import com.gameshop.ecommerce.security.auth.model.*;
 import com.gameshop.ecommerce.security.auth.service.AuthenticationService;
 import com.gameshop.ecommerce.utils.MessageResponse;
 import com.gameshop.ecommerce.utils.exception.EmailAlreadyExistsException;
@@ -42,6 +39,12 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> refreshToken(@RequestHeader(value = "Authorization") String authorizationHeader) {
         String refreshToken = getToken(authorizationHeader);
         LoginResponse response = authenticationService.refreshToken(refreshToken);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/google", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LoginResponse> authenticateGoogle(@RequestBody TokenRequest tokenRequest) {
+        LoginResponse response = authenticationService.authenticateGoogle(tokenRequest.getToken());
         return ResponseEntity.ok(response);
     }
 
