@@ -37,8 +37,13 @@ public class AuthenticationService {
         if (verifiedUser.isEmpty()) {
             throw new JwtTokenException("Invalid Google token");
         }
-        String accessToken = jwtService.generateAccessToken(verifiedUser.get());
-        String refreshToken = jwtService.generateRefreshToken(verifiedUser.get());
+
+        var savedUser = userService
+                .getByEmail(verifiedUser.get().getEmail())
+                .orElseGet(() -> userService.create(verifiedUser.get()));
+
+        String accessToken = jwtService.generateAccessToken(savedUser);
+        String refreshToken = jwtService.generateRefreshToken(savedUser);
         return new LoginResponse(accessToken, refreshToken);
     }
 
@@ -50,31 +55,27 @@ public class AuthenticationService {
                     .build()
                     .verify(token);
 
-            if (googleIdToken != null) {
-                final var payload = googleIdToken.getPayload();
-                // check if user with this email already exists
-                User user = (User) userService.userDetailsService().loadUserByUsername(payload.getEmail());
-                if (user != null) {
-                    return Optional.of(user);
-                }
-                final var firstName = (String) payload.get("given_name");
-                final var lastName = (String) payload.get("family_name");
-                final var emailVerified = (Boolean) payload.get("email_verified");
-                final var pictureUrl = (String) payload.get("picture");
-                final var email = payload.getEmail();
-
-                return Optional.of(User.builder()
-                        .firstName(firstName)
-                        .lastName(lastName)
-                        .password(passwordEncoder.encode(token))
-                        .phone("")
-                        .email(email)
-                        .isEmailVerified(emailVerified)
-                        .userPhoto(pictureUrl)
-                        .build());
+            if (googleIdToken == null) {
+                return Optional.empty();
             }
 
-            return Optional.empty();
+            final var payload = googleIdToken.getPayload();
+            // check if user with this email already exists
+            final var firstName = (String) payload.get("given_name");
+            final var lastName = (String) payload.get("family_name");
+            final var emailVerified = (Boolean) payload.get("email_verified");
+            final var pictureUrl = (String) payload.get("picture");
+            final var email = payload.getEmail();
+
+            return Optional.of(User.builder()
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .password(passwordEncoder.encode(token))
+                    .phone("")
+                    .email(email)
+                    .isEmailVerified(emailVerified)
+                    .userPhoto(pictureUrl)
+                    .build());
         } catch (GeneralSecurityException | IOException e) {
             log.error("Failed to verify google token: ", e);
             return Optional.empty();
@@ -87,7 +88,7 @@ public class AuthenticationService {
                 password
         ));
 
-        User user = (User) userService.userDetailsService().loadUserByUsername(email);
+        User user = (User) userService.loadUserByUsername(email);
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -111,7 +112,7 @@ public class AuthenticationService {
             throw new JwtTokenException("Only refresh tokens are allowed");
 
         String email = jwtService.extractEmail(refreshToken);
-        User user = (User) userService.userDetailsService().loadUserByUsername(email);
+        User user = (User) userService.loadUserByUsername(email);
 
         String newAccessToken = jwtService.generateAccessToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);

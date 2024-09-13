@@ -27,7 +27,7 @@ public class AuthProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
-        User user = (User) userService.userDetailsService().loadUserByUsername(email);
+        User user = (User) userService.loadUserByUsername(email);
 
         if (user == null || (!user.getEmail().equals(email) && !user.getUsername().equals(email)))
             throw new UsernameNotFoundException("Користувача з email " + email + " не знайдено");
