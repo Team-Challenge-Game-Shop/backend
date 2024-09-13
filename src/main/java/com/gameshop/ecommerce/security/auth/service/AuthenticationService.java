@@ -56,6 +56,7 @@ public class AuthenticationService {
                     .verify(token);
 
             if (googleIdToken == null) {
+                log.warn("google id token is null");
                 return Optional.empty();
             }
 
