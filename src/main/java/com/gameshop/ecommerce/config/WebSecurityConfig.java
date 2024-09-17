@@ -30,6 +30,7 @@ public class WebSecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/wishlist/**").authenticated()
+                        .requestMatchers("/account/**").authenticated()
                         .anyRequest().permitAll())
                 //.oauth2Login(auth -> auth.successHandler(oAuth2SuccessHandler))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

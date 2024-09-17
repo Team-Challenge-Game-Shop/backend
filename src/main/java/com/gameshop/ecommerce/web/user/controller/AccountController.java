@@ -6,6 +6,7 @@ import com.gameshop.ecommerce.web.user.model.UserDTO;
 import com.gameshop.ecommerce.web.user.model.UserInfoDTO;
 import com.gameshop.ecommerce.web.user.service.AccountService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,12 @@ public class AccountController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @ModelAttribute UserDTO userDto) {
-        UserDTO updatedUser = null;
+    public ResponseEntity<?> updateInfo(@AuthenticationPrincipal User user, @Valid @ModelAttribute UserDTO userDto) {
         try {
-            updatedUser = accountService.updateInfo(user, userDto);
+            final var updatedUser = accountService.updateInfo(user, userDto);
+            return ResponseEntity.ok().body(updatedUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
-        return ResponseEntity.ok().body(updatedUser);
     }
 }
