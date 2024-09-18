@@ -11,15 +11,11 @@ import com.gameshop.ecommerce.web.product.dao.ProductDAO;
 import com.gameshop.ecommerce.web.product.dto.ProductCatalogDTO;
 import com.gameshop.ecommerce.web.product.model.Product;
 import com.gameshop.ecommerce.web.user.model.User;
-import com.gameshop.ecommerce.web.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,7 +23,6 @@ import java.util.stream.Collectors;
 public class CartService {
     private final CartDAO cartDAO;
     private final ProductDAO productDAO;
-    private final UserRepository userRepository;
 
 
     public Cart getCartByUser(User user) {
@@ -74,7 +69,7 @@ public class CartService {
     }
 
     @Transactional
-    public Cart removeProductFromCart(User user, List<CartBody> cartBodies) {
+    public CartDto removeProductFromCart(User user, List<CartBody> cartBodies) {
         Cart cart = getCartByUser(user);
 
         Map<UUID, CartItem> cartItemMap = cart.getCartItems().stream()
@@ -92,14 +87,14 @@ public class CartService {
             }
         });
 
-        return cartDAO.save(cart);
+        return convertToCartDto(cartDAO.save(cart));
     }
 
     @Transactional
-    public Cart clearCart(User user) {
+    public CartDto clearCart(User user) {
         Cart cart = getCartByUser(user);
         cart.getCartItems().clear();
-        return cartDAO.save(cart);
+        return convertToCartDto(cartDAO.save(cart));
     }
 
     public CartDto getCartDetails(User user) {
@@ -107,9 +102,11 @@ public class CartService {
     }
 
     private CartDto convertToCartDto(Cart cart) {
-        return new CartDto(cart.getCartItems().stream()
+        final var itemsDto = cart.getCartItems().stream()
                 .map(this::createCartItemDto)
-                .collect(Collectors.toSet()), cart.getId());
+                .collect(Collectors.toSet());
+
+        return new CartDto(itemsDto, cart.getId());
     }
 
     private CartItemDto createCartItemDto(CartItem cartItem) {
