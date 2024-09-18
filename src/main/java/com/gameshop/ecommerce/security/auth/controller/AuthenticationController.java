@@ -4,6 +4,7 @@ import com.gameshop.ecommerce.security.auth.model.*;
 import com.gameshop.ecommerce.security.auth.service.AuthenticationService;
 import com.gameshop.ecommerce.utils.MessageResponse;
 import com.gameshop.ecommerce.utils.exception.EmailAlreadyExistsException;
+import com.gameshop.ecommerce.utils.exception.EmailFailureException;
 import com.gameshop.ecommerce.web.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,16 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> authenticateGoogle(@RequestBody TokenRequest tokenRequest) {
         LoginResponse response = authenticationService.authenticateGoogle(tokenRequest.getToken());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/verify")
+    public ResponseEntity<?> verifyEmail(@RequestParam("token") String confirmationCode) {
+        try {
+            final LoginResponse loginResponse = authenticationService.verifyEmail(confirmationCode);
+            return ResponseEntity.ok().body(loginResponse);
+        } catch (EmailFailureException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
     private static String getToken(String authorizationHeader) {

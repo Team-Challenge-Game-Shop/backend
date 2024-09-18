@@ -56,6 +56,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with password reset code: " + passwordResetCode));
     }
 
+    public User getByConfirmationCode(String confirmationCode) throws EntityNotFoundException {
+        return userRepository.findByConfirmationCode(confirmationCode)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with confirmation code: " + confirmationCode));
+    }
     public User update(UUID id, User user) {
         user.setId(id);
         return userRepository.save(user);

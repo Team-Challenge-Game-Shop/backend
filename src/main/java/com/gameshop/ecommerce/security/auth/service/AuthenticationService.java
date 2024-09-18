@@ -2,6 +2,7 @@ package com.gameshop.ecommerce.security.auth.service;
 
 import com.gameshop.ecommerce.security.auth.model.LoginResponse;
 import com.gameshop.ecommerce.security.auth.model.RegistrationRequest;
+import com.gameshop.ecommerce.utils.exception.EmailFailureException;
 import com.gameshop.ecommerce.utils.exception.JwtTokenException;
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.user.service.UserService;
@@ -104,7 +105,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .phone(request.getPhone())
-                .isEmailVerified(true)
+                .isEmailVerified(false)
                 .build());
     }
 
@@ -118,5 +119,25 @@ public class AuthenticationService {
         String newAccessToken = jwtService.generateAccessToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);
         return new LoginResponse(newAccessToken, newRefreshToken);
+    }
+
+    public LoginResponse verifyEmail(String confirmationCode) throws EmailFailureException {
+        final var user = userService.getByConfirmationCode(confirmationCode);
+        // check whether email is already verified
+        if (user.getIsEmailVerified()) {
+            throw new EmailFailureException("Email already verified. Please login");
+        }
+
+        // check whether email verification code is correct
+        if (user.getConfirmationCode().equals(confirmationCode)) {
+            user.setIsEmailVerified(true);
+            userService.update(user.getId(), user);
+            // generate new access token and refresh token
+            String accessToken = jwtService.generateAccessToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+            return new LoginResponse(accessToken, refreshToken);
+        } else {
+            throw new EmailFailureException("Email verification failed. Confirmation code is incorrect");
+        }
     }
 }
