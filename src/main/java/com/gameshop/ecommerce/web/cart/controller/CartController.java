@@ -1,6 +1,5 @@
 package com.gameshop.ecommerce.web.cart.controller;
 
-import com.gameshop.ecommerce.web.cart.model.Cart;
 import com.gameshop.ecommerce.web.cart.model.CartBody;
 import com.gameshop.ecommerce.web.cart.model.dto.CartDto;
 import com.gameshop.ecommerce.web.cart.service.CartService;
@@ -28,8 +27,8 @@ public class CartController {
 
     @CrossOrigin
     @DeleteMapping("/clear")
-    public ResponseEntity<Cart> clearCart(@AuthenticationPrincipal User user) {
-        Cart cart = cartService.clearCart(user);
+    public ResponseEntity<CartDto> clearCart(@AuthenticationPrincipal User user) {
+        final var cart = cartService.clearCart(user);
         return ResponseEntity.ok(cart);
     }
 
@@ -42,8 +41,8 @@ public class CartController {
 
     @CrossOrigin
     @DeleteMapping()
-    public ResponseEntity<Cart> removeFromCart(@AuthenticationPrincipal User user, @RequestBody List<CartBody> cartBodies) {
-        Cart cart = cartService.removeProductFromCart(user, cartBodies);
+    public ResponseEntity<CartDto> removeFromCart(@AuthenticationPrincipal User user, @RequestBody List<CartBody> cartBodies) {
+        final var cart = cartService.removeProductFromCart(user, cartBodies);
         return ResponseEntity.ok(cart);
     }
 }
