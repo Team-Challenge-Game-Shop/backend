@@ -49,7 +49,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/verify")
+    @GetMapping(value = "/verify")
     public ResponseEntity<?> verifyEmail(@RequestParam("token") String confirmationCode) {
         try {
             final LoginResponse loginResponse = authenticationService.verifyEmail(confirmationCode);
