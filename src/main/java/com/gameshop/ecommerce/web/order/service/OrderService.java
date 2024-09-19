@@ -1,19 +1,13 @@
 package com.gameshop.ecommerce.web.order.service;
 
-import com.gameshop.ecommerce.web.order.dao.WebOrderDAO;
 import com.gameshop.ecommerce.web.order.model.WebOrder;
-import com.gameshop.ecommerce.web.user.model.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-@RequiredArgsConstructor
-@Service
-public class OrderService {
-    private final WebOrderDAO webOrderDAO;
+public interface OrderService {
+    WebOrder addOrder(List<UUID> productList, List<Integer> quantityList, UUID addressId, UUID userId);
 
-    public List<WebOrder> getOrders(User user) {
-        return webOrderDAO.findByUser(user);
-    }
+    Optional<WebOrder> getOrder(UUID orderId);
 }
