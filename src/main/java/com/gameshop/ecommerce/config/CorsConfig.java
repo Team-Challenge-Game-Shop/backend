@@ -1,7 +1,7 @@
 package com.gameshop.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static com.gameshop.ecommerce.utils.Constants.DEPLOY_STORE;
 import static com.gameshop.ecommerce.utils.Constants.LOCALHOST;
 
-@Component
+@Configuration
 public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
