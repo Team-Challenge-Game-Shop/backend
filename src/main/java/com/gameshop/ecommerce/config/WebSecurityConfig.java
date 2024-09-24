@@ -5,6 +5,7 @@ import com.gameshop.ecommerce.security.auth.AuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -30,7 +31,8 @@ public class WebSecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/wishlist/**").authenticated()
-                        .requestMatchers("/account/**").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/account/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT,"/account/**").authenticated()
                         .anyRequest().permitAll())
                 //.oauth2Login(auth -> auth.successHandler(oAuth2SuccessHandler))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
