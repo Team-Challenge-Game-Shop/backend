@@ -46,6 +46,7 @@ public class ProductMapperService {
         productDetailDTO.setShortDescription(product.getShortDescription());
         productDetailDTO.setLongDescription(product.getLongDescription());
         productDetailDTO.setReviews(product.getReviews());
+        productDetailDTO.setFeatures(product.getFeatures());
         productDetailDTO.setAverageRate(product.getAverageRate());
         productDetailDTO.setCategory(product.getCategory().getName());
         if (user != null) {
