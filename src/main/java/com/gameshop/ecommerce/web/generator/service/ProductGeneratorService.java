@@ -3,10 +3,7 @@ package com.gameshop.ecommerce.web.generator.service;
 import com.gameshop.ecommerce.web.product.dao.BrandDAO;
 import com.gameshop.ecommerce.web.product.dao.CategoryDAO;
 import com.gameshop.ecommerce.web.product.dao.ProductDAO;
-import com.gameshop.ecommerce.web.product.model.Brand;
-import com.gameshop.ecommerce.web.product.model.Category;
-import com.gameshop.ecommerce.web.product.model.Inventory;
-import com.gameshop.ecommerce.web.product.model.Product;
+import com.gameshop.ecommerce.web.product.model.*;
 import com.gameshop.ecommerce.web.review.model.Review;
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.user.repository.UserRepository;
@@ -42,6 +39,38 @@ public class ProductGeneratorService {
     List<Category> categoriesList = new ArrayList<>();
     List<Product> products = new ArrayList<>();
 
+    // product features constants
+    private final String[] featureTitles = {
+            "Ultra Durability", "Smart Connectivity", "Eco-Friendly Design", "High-Speed Performance", "Compact Size", "User-Friendly Interface",
+            "Advanced Security", "Versatile Compatibility", "Long Battery Life", "Elegant Aesthetic", "Crystal Clear Display", "Seamless Integration",
+            "Multi-Functional Capability", "Lightweight Build", "Powerful Efficiency", "Enhanced Functionality", "Robust Construction", "Rapid Response Time",
+            "Intuitive Controls", "Customizable Options"
+    };
+    private final String[] featureDescriptions = {
+            "Built to withstand the toughest conditions, ensuring longevity.", "Connects effortlessly with all your smart devices.",
+            "Made from sustainable materials, reducing environmental impact.", "Delivers lightning-fast processing speeds for all your tasks.",
+            "Designed to fit easily in any bag or space.", "Simple navigation for users of all skill levels.",
+            "State-of-the-art encryption to keep your data secure.", "Compatible with a wide range of products and platforms.",
+            "Lasts up to 24 hours on a single charge, perfect for travel.", "Stylish design that complements any decor.",
+            "Offers vibrant colors and sharp images for a stunning viewing experience.", "Easily integrates with your existing setup for a hassle-free experience.",
+            "Offers multiple functions to meet diverse needs.", "Extremely portable, making it ideal for on-the-go use.",
+            "Optimizes energy consumption without sacrificing performance.", "Goes beyond basic functionality with innovative features.",
+            "Engineered to endure daily wear and tear.", "Responds to commands in a fraction of a second.",
+            "Designed for effortless use with simple controls.", "Allows for personalized settings to suit your preferences."
+    };
+    private final String[] featureImages = new String[]{
+            "https://images.pexels.com/photos/5702270/pexels-photo-5702270.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/665214/pexels-photo-665214.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/3722752/pexels-photo-3722752.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/27679707/pexels-photo-27679707/free-photo-of-a-pair-of-headphones-sitting-on-top-of-a-keyboard.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/16311111/pexels-photo-16311111/free-photo-of-close-up-of-computer-mouse.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/14130157/pexels-photo-14130157.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/19012035/pexels-photo-19012035/free-photo-of-acer-nitro-gaming-mouse-with-rgb-backlight.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/5380602/pexels-photo-5380602.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/3812048/pexels-photo-3812048.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    };
+
     public void generateProducts() {
         long time = System.currentTimeMillis();
 
@@ -74,6 +103,7 @@ public class ProductGeneratorService {
         product.setBrand(brandsList.get(faker.number().numberBetween(0, 6)));
         product.setCharacteristics(createCharacteristics(faker, product.getCategory().getName()));
         product.setReviews(generateReviews(faker, product));
+        product.setFeatures(generateFeatures(faker, product));
         Inventory inventory = createInventory(faker, product);
         product.setInventory(inventory);
         return product;
@@ -169,5 +199,19 @@ public class ProductGeneratorService {
             review.setProduct(product);
         }
         return reviews;
+    }
+
+    public List<Feature> generateFeatures(Faker faker, Product product) {
+        List<Feature> features = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            Feature feature = new Feature();
+            feature.setTitle(featureTitles[faker.random().nextInt(0, featureTitles.length - 1)]);
+            feature.setDescription(featureDescriptions[faker.random().nextInt(0, featureDescriptions.length - 1)]);
+            feature.setImageUrl(featureImages[faker.random().nextInt(0, featureImages.length - 1)]);
+            feature.setProduct(product);
+            features.add(feature);
+        }
+        return features;
     }
 }
