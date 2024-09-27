@@ -3,6 +3,7 @@ package com.gameshop.ecommerce.web.product.service;
 import com.gameshop.ecommerce.web.product.dto.ProductCatalogDTO;
 import com.gameshop.ecommerce.web.product.dto.ProductDetailDTO;
 import com.gameshop.ecommerce.web.product.model.Product;
+import com.gameshop.ecommerce.web.product.model.ProductImage;
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
@@ -46,12 +47,18 @@ public class ProductMapperService {
         productDetailDTO.setShortDescription(product.getShortDescription());
         productDetailDTO.setLongDescription(product.getLongDescription());
         productDetailDTO.setReviews(product.getReviews());
+        productDetailDTO.setFeatures(product.getFeatures());
         productDetailDTO.setAverageRate(product.getAverageRate());
         productDetailDTO.setCategory(product.getCategory().getName());
         if (user != null) {
             productDetailDTO.setInWishlist(wishlistService.isProductInWishlist(product.getId(), user));
         } else {
             productDetailDTO.setInWishlist(false);
+        }
+        if (product.getImages() != null) {
+            productDetailDTO.setImages(product.getImages().stream()
+                    .map(ProductImage::getUrl)
+                    .toList());
         }
         return productDetailDTO;
     }

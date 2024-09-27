@@ -41,6 +41,9 @@ public class Product {
     @Column(name = "image_url", length = 800)
     private String imageUrl;
 
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    private List<ProductImage> images;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -68,6 +71,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    private List<Feature> features = new ArrayList<>();
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "category_id", nullable = false)
