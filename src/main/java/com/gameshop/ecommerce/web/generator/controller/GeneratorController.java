@@ -5,10 +5,7 @@ import com.gameshop.ecommerce.web.generator.service.ProductGeneratorService;
 import com.gameshop.ecommerce.web.generator.service.UserGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,8 +18,10 @@ public class GeneratorController {
 
     @CrossOrigin
     @PostMapping("/products")
-    public ResponseEntity<Void> generateProducts() {
-        productGeneratorService.generateProducts();
+    public ResponseEntity<Void> generateProducts(
+            @RequestParam(required = false, defaultValue = "1000") int amount
+    ) {
+        productGeneratorService.generateProducts(amount);
         return ResponseEntity.ok().build();
     }
 

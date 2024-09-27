@@ -26,6 +26,7 @@ public class ProductDetailDTO extends RepresentationModel<ProductDetailDTO> {
     private String longDescription;
     private Integer price;
     private String imageUrl;
+    private List<String> images;
     private Instant createdAt;
     private Map<String, String> characteristics;
     private Integer priceWithSale;
