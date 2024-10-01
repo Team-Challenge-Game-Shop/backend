@@ -25,7 +25,7 @@ public class EmailService {
 
     public void sendConfirmationEmail(String recipientAddress, String confirmationCode) {
         String subject = "Confirm your email address";
-        String confirmationUrl = appUrl + "/auth/verify?token=" + confirmationCode;
+        String confirmationUrl = appUrl + "/verify?token=" + confirmationCode;
         try {
             sendHtmlMessage(recipientAddress, subject, confirmationUrl);
         } catch (MessagingException | UnsupportedEncodingException e) {
