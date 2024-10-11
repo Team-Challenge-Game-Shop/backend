@@ -30,7 +30,9 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/wishlist/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/wishlist/**").authenticated()
                         .requestMatchers(HttpMethod.GET,"/account/**").authenticated()
                         .requestMatchers(HttpMethod.PUT,"/account/**").authenticated()
                         .anyRequest().permitAll())
