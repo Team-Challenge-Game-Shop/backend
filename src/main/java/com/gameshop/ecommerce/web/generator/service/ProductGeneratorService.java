@@ -245,6 +245,13 @@ public class ProductGeneratorService {
                 break;
         }
 
+        List.of("Specs & Details", "Compatibility", "In the Box", "Warranty")
+                .forEach(characteristic -> characteristics.put(
+                        characteristic,
+                        faker.lorem().words(faker.number().numberBetween(20, 30)).stream()
+                                .reduce("", (s1, s2) -> s1 + " " + s2)
+                                .trim()));
+
         return characteristics;
     }
 
