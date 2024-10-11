@@ -1,7 +1,7 @@
 package com.gameshop.ecommerce.web.product.dto;
 
 import com.gameshop.ecommerce.web.product.model.Feature;
-import com.gameshop.ecommerce.web.review.model.Review;
+import com.gameshop.ecommerce.web.review.model.dto.ReviewMainPageDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +31,7 @@ public class ProductDetailDTO extends RepresentationModel<ProductDetailDTO> {
     private Map<String, String> characteristics;
     private Integer priceWithSale;
     private String brand;
-    private List<Review> reviews;
+    private List<ReviewMainPageDTO> reviews;
     private List<Feature> features;
     private String category;
     private Double averageRate;

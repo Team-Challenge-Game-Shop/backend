@@ -4,6 +4,7 @@ import com.gameshop.ecommerce.web.product.dto.ProductCatalogDTO;
 import com.gameshop.ecommerce.web.product.dto.ProductDetailDTO;
 import com.gameshop.ecommerce.web.product.model.Product;
 import com.gameshop.ecommerce.web.product.model.ProductImage;
+import com.gameshop.ecommerce.web.review.service.ReviewMapperService;
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductMapperService {
     private final WishlistService wishlistService;
+    private final ReviewMapperService reviewMapperService;
 
     public ProductCatalogDTO toModel(Product product, User user) {
         ProductCatalogDTO productCatalogDTO = new ProductCatalogDTO();
@@ -46,7 +48,7 @@ public class ProductMapperService {
         productDetailDTO.setCharacteristics(product.getCharacteristics());
         productDetailDTO.setShortDescription(product.getShortDescription());
         productDetailDTO.setLongDescription(product.getLongDescription());
-        productDetailDTO.setReviews(product.getReviews());
+        productDetailDTO.setReviews(reviewMapperService.toModelList(product.getReviews()));
         productDetailDTO.setFeatures(product.getFeatures());
         productDetailDTO.setAverageRate(product.getAverageRate());
         productDetailDTO.setCategory(product.getCategory().getName());
