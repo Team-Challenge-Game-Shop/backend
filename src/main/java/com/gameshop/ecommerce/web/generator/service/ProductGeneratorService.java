@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -230,20 +232,27 @@ public class ProductGeneratorService {
                 characteristics.put("DPI", String.valueOf(faker.options().option(800, 1600, 2200, 600, 1200)));
                 characteristics.put("Buttons", String.valueOf(faker.number().numberBetween(2, 8)));
                 characteristics.put("Interface", faker.options().option("USB", "Bluetooth", "2,4 GHz"));
-                characteristics.put("Color", faker.options().option("Red", "White", "Black", "Blue", "Yellow"));
                 break;
+
             case "Keyboards":
                 characteristics.put("Layout", faker.options().option("QWERTY", "AZERTY", "QWERTZ"));
                 characteristics.put("Type", faker.options().option("Hybrid mechanical-membrane", "Optical-mechanical", "Scissors", "Mechanical", "Membrane"));
                 characteristics.put("Interface", faker.options().option("USB", "Bluetooth", "2,4 GHz"));
                 characteristics.put("Size", faker.options().option("100%", "75%", "60%"));
                 break;
+
             case "Headsets":
                 characteristics.put("Type", faker.options().option("In-Ear", "On-Ear", "Over-Ear"));
                 characteristics.put("Connection type", faker.options().option("Wired", "Wireless", "Combined"));
                 characteristics.put("Noise Cancelling", faker.options().option("With noise cancelling", "Without noise cancelling"));
                 break;
         }
+
+        final var colors = Stream.generate(() -> faker.color().hex(true))
+                .limit(faker.number().numberBetween(2, 6))
+                .collect(Collectors.joining(";"));
+
+        characteristics.put("Color", colors);
 
         List.of("Specs & Details", "Compatibility", "In the Box", "Warranty")
                 .forEach(characteristic -> characteristics.put(
