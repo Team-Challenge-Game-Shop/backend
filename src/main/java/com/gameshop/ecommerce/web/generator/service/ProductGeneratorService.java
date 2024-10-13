@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -189,8 +187,8 @@ public class ProductGeneratorService {
         if (product.getIsSale()) {
             product.setPriceWithSale((int) (product.getPrice() * 0.75));
         }
-        product.setShortDescription(faker.lorem().words(10).stream().reduce("", (s1, s2) -> s1 + " " + s2));
-        product.setLongDescription(faker.lorem().words(30).stream().reduce("", (s1, s2) -> s1 + " " + s2));
+        product.setShortDescription(faker.lorem().fixedString(faker.number().numberBetween(20, 50)));
+        product.setLongDescription(faker.lorem().fixedString(faker.number().numberBetween(100, 200)));
         product.setCategory(categoriesList.get(faker.number().numberBetween(0, categoriesList.size())));
         product.setImageUrl(setImageForCategory(product));
         product.setImages(generateImages(faker, product));
@@ -248,18 +246,12 @@ public class ProductGeneratorService {
                 break;
         }
 
-        final var colors = Stream.generate(() -> faker.color().hex(true))
-                .limit(faker.number().numberBetween(2, 6))
-                .collect(Collectors.joining(";"));
-
-        characteristics.put("Color", colors);
+        characteristics.put("Color", String.join(";", List.of("#FFFFFF", "#000000", "#BCC6CC")));
 
         List.of("Specs & Details", "Compatibility", "In the Box", "Warranty")
                 .forEach(characteristic -> characteristics.put(
                         characteristic,
-                        faker.lorem().words(faker.number().numberBetween(20, 30)).stream()
-                                .reduce("", (s1, s2) -> s1 + " " + s2)
-                                .trim()));
+                        faker.lorem().fixedString(faker.number().numberBetween(100, 150))));
 
         return characteristics;
     }

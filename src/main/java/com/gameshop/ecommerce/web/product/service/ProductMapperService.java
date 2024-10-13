@@ -4,17 +4,21 @@ import com.gameshop.ecommerce.web.product.dto.ProductCatalogDTO;
 import com.gameshop.ecommerce.web.product.dto.ProductDetailDTO;
 import com.gameshop.ecommerce.web.product.model.Product;
 import com.gameshop.ecommerce.web.product.model.ProductImage;
-import com.gameshop.ecommerce.web.review.service.ReviewMapperService;
+import com.gameshop.ecommerce.web.review.model.Review;
 import com.gameshop.ecommerce.web.user.model.User;
 import com.gameshop.ecommerce.web.wishlist.service.WishlistService;
+import io.jsonwebtoken.lang.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class ProductMapperService {
     private final WishlistService wishlistService;
-    private final ReviewMapperService reviewMapperService;
 
     public ProductCatalogDTO toModel(Product product, User user) {
         ProductCatalogDTO productCatalogDTO = new ProductCatalogDTO();
@@ -48,7 +52,8 @@ public class ProductMapperService {
         productDetailDTO.setCharacteristics(product.getCharacteristics());
         productDetailDTO.setShortDescription(product.getShortDescription());
         productDetailDTO.setLongDescription(product.getLongDescription());
-        productDetailDTO.setReviews(reviewMapperService.toModelList(product.getReviews()));
+        productDetailDTO.setReviews(getReviewRates(product.getReviews()));
+        productDetailDTO.setColors(getColors(product.getCharacteristics()));
         productDetailDTO.setFeatures(product.getFeatures());
         productDetailDTO.setAverageRate(product.getAverageRate());
         productDetailDTO.setCategory(product.getCategory().getName());
@@ -63,5 +68,31 @@ public class ProductMapperService {
                     .toList());
         }
         return productDetailDTO;
+    }
+
+    private List<Integer> getReviewRates(List<Review> reviews) {
+        if (reviews != null) {
+            return reviews.stream()
+                    .map(Review::getRate)
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
+
+        return List.of();
+    }
+
+    private List<String> getColors(Map<String, String> characteristics) {
+        if (characteristics == null || !characteristics.containsKey("Color")) {
+            return List.of();
+        }
+
+
+        final var color = characteristics.get("Color");
+        final var elements = color.split(";");
+        if (elements.length == 0) {
+            return List.of();
+        }
+
+        return Arrays.asList(elements);
     }
 }

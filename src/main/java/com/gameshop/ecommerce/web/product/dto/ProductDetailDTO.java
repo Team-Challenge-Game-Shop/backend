@@ -31,9 +31,10 @@ public class ProductDetailDTO extends RepresentationModel<ProductDetailDTO> {
     private Map<String, String> characteristics;
     private Integer priceWithSale;
     private String brand;
-    private List<ReviewMainPageDTO> reviews;
+    private List<Integer> reviews;
     private List<Feature> features;
     private String category;
     private Double averageRate;
     private Boolean inWishlist;
+    private List<String> colors;
 }
