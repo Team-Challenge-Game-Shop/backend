@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -49,7 +50,7 @@ public class ProductMapperService {
         productDetailDTO.setCreatedAt(product.getCreatedAt());
         productDetailDTO.setPriceWithSale(product.getPriceWithSale());
         productDetailDTO.setBrand(product.getBrand().getName());
-        productDetailDTO.setCharacteristics(product.getCharacteristics());
+        productDetailDTO.setCharacteristics(filterCharacteristics(product.getCharacteristics()));
         productDetailDTO.setShortDescription(product.getShortDescription());
         productDetailDTO.setLongDescription(product.getLongDescription());
         productDetailDTO.setReviews(getReviewRates(product.getReviews()));
@@ -68,6 +69,17 @@ public class ProductMapperService {
                     .toList());
         }
         return productDetailDTO;
+    }
+
+    private Map<String, String> filterCharacteristics(Map<String, String> map) {
+        if (map == null || map.isEmpty()) {
+            return map;
+        }
+
+        // remove Color
+        return map.entrySet().stream()
+                .filter(_entry -> !"Color".equals(_entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private List<Integer> getReviewRates(List<Review> reviews) {
